@@ -2,6 +2,8 @@
 
 token current_token;
 token temp_token;
+token *current_token_ptr;
+token *temp_token_ptr;
 
 // Funciones
 

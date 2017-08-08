@@ -12,3 +12,5 @@
 compiler.o: parser.c 
 	gcc parser.c -o compiler
 	./compiler
+
+

@@ -24,8 +24,9 @@
 //############################################### FUNCIONES PARSER ###############################################
 
 token next_token(void){		// Es una función que se puede discutir para encontrar una mejor solución
-	if (current_token == temp_token){
+	if (current_token_ptr == temp_token_ptr || temp_token_ptr == NULL){
 		temp_token = scanner();
+		temp_token_ptr = &temp_token;
 	}
 	return temp_token;
 }
@@ -33,13 +34,15 @@ token next_token(void){		// Es una función que se puede discutir para encontrar
 void match(token tok){ 		// Es una función que se puede discutir para encontrar una mejor solución
 
 	token tempTok = next_token();
-
+	token *temp;
 	printf("Parameters -> %d, Scanner -> %d\n", tok, tempTok);
-	//printf("parameters -> %d\n", tok);
-	//printf("scanner -> %d\n", tempTok);
 	
 	if (tempTok == tok){
 		current_token = tempTok;
+		// *
+		temp = current_token_ptr;
+		current_token_ptr = &current_token;
+		temp_token_ptr = temp;
 	}else{
 		syntax_error(tempTok);
 	}
@@ -47,6 +50,7 @@ void match(token tok){ 		// Es una función que se puede discutir para encontrar
 }
 
 void syntax_error(token tok){	//FALTA HACER
+	current_token_ptr = temp_token_ptr;
 	if (tok == BEGIN){
 		printf("%s\n", "Error de sintaxis. El BEGIN no va en esa parte.");
 	}else if(tok == END){
