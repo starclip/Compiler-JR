@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include "scanner.c"
 #include "parser.h"
+#include "sem_records.h"
+#include "sem_routines.c"
 //############################################### FUNCIONES PARSER ###############################################
 
 token next_token(void){		// Es una función que se puede discutir para encontrar una mejor solución
@@ -35,7 +37,7 @@ void match(token tok){ 		// Es una función que se puede discutir para encontrar
 
 	token tempTok = next_token();
 	token *temp;
-	printf("Parameters -> %d, Scanner -> %d\n", tok, tempTok);
+	//printf("Parameters -> %d, Scanner -> %d\n", tok, tempTok);
 	
 	if (tempTok == tok){
 		current_token = tempTok;
