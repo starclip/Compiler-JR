@@ -21,19 +21,19 @@
 #include <stdlib.h>
 #include "scanner.c"
 #include "parser.h"
-#include "sem_records.h"
 #include "sem_routines.c"
-//############################################### FUNCIONES PARSER ###############################################
 
-token next_token(void){		// Es una función que se puede discutir para encontrar una mejor solución
+token next_token(void){
+	
 	if (current_token_ptr == temp_token_ptr || temp_token_ptr == NULL){
 		temp_token = scanner();
 		temp_token_ptr = &temp_token;
 	}
+
 	return temp_token;
 }
 
-void match(token tok){ 		// Es una función que se puede discutir para encontrar una mejor solución
+void match(token tok){
 
 	token tempTok = next_token();
 	token *temp;
@@ -82,9 +82,12 @@ void syntax_error(token tok){	//FALTA HACER
 	}else if(tok == SCANEOF){
 		printf("%s\n", "Error de sintaxis. El SCANEOF no va en esa parte");
 	}
-
 }
 
+void ident(void){
+	match(ID);
+	process_id();
+}
 
 void id_list(void){		// <id list> ::= ID {  , ID }
 	
@@ -96,18 +99,20 @@ void id_list(void){		// <id list> ::= ID {  , ID }
 	}
 }
 
-void add_op(void){		// <add op> ::= PLUSOP | MINUSOP
+void add_op(op_rec *op){		// <add op> ::= PLUSOP | MINUSOP
 	
 	token tok = next_token();
 
 	if(tok == PLUSOP || tok == MINUSOP){
 		match(tok);
+		*op = process_op();
+
 	}else{
 		syntax_error(tok);
 	}
 }
 
-void primary(void){
+void primary(expr_rec *result){
 
 	token tok = next_token();
 
@@ -115,16 +120,17 @@ void primary(void){
 
 		case LPAREN: 	// <primary> ::= ( <expression> )
 			match(LPAREN);
-			expression();
+			expression(result);
 			match(RPAREN);
 			break;
 
 		case ID:		// <primary> ::= ID
-			match(ID);
+			ident();
 			break;
 
 		case INTLITERAL:	// <primary> ::= INTLITERAL
 			match(INTLITERAL);
+			*result = process_literal();
 			break;
 
 		default:
@@ -133,37 +139,42 @@ void primary(void){
 	}
 }
 
-void expression(void){		// <expression> ::= <primary> { <add op> <primary> }
+void expression(expr_rec *result){	// <expression> ::= <primary> { <add op> <primary> }
 
-	token t;
-	primary();
 
-	for(t = next_token(); t == PLUSOP || t == MINUSOP; t = next_token()){
-		add_op();
-		primary();
+	expr_rec left_operand, right_operand;
+	op_rec op;
+
+	primary(&left_operand);	//
+
+	while(next_token() == PLUSOP || next_token() == MINUSOP){
+		add_op(&op);	//
+		primary(&right_operand); //
+		left_operand = gen_infix(left_operand, op, right_operand);
 	}
+
+	*result = left_operand;
 }
 
 void expr_list(void){		// <expr list> ::= <expression> {  , <expression> }
 
-	expression();
+	expression(); //QUE PARAMETRO SE LE PASA AQUI?
 
 	while(next_token() == COMMA){
 		match(COMMA);
-		expression();
+		expression(); //QUE PARAMETRO SE LE PASA AQUI?
 	}
 }
 
-
-void statement(void){
+void statement(void){	//llama a ident ?
 
 	token tok = next_token();
 
 	switch(tok){
 		case ID:		//<statement> ::= ID := <expression> ;
-			match(ID);
+			ident();	
 			match(ASSIGNOP);
-			expression();
+			expression();	//QUE PARAMETRO SE LE PASA AQUI?
 			match(SEMICOLON);
 			break;
 
@@ -207,20 +218,19 @@ void statement_list(void){		//<statement list> ::= <statement> { <statement> }
 
 void program(void){		//<program> ::= begin <statement list> end
 
-	match(BEGIN);
-	statement_list();
-	match(END);
+	start();
 }
 
 void system_goal(void){		// <system goal> ::= <program> SCANEOF
 
 	program();
 	match(SCANEOF);
+	finish();
 }
 
 void read_file(){
 
-	file = fopen("example_3.txt", "r");
+	file = fopen("example_1.txt", "r");
 	if (file == NULL){
 		printf("%s\n", "El archivo no existe.");
 	}else{
@@ -229,10 +239,8 @@ void read_file(){
 	
 }
 
-
 int main(){
 
-	printf("%s\n", "Compilando...\n");
 	read_file();
 	system_goal();
 	return 0;

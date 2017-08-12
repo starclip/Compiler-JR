@@ -1,21 +1,30 @@
 // Rutinas semanticas del programa
+// Se encargan de traducir los tokens a x86
+
 #include "sem_routines.h"
 
+//revisa si el parametro se encuentra en la tabla de símbolos
 int lookup(string s){
-	// Falta implementar
 
 }
 
+//ingresa el parametro en la tabla de simbolos
 void enter(string s){
-	// Falta implementar
 }
 
-void generate(string s, string m, string l, string p){
-	// Falta implementar
+void generate(string op_code, string op1, string op2, string result_field){
+	// llama a extract()
 }
 
-char *extract(expr_rec source){
+char *extract_op(op_rec source){
+	//falta implementar
+}
+
+char *extract_exp(expr_rec source){
 	// Falta implementar
+
+	return source.name;
+
 }
 
 void check_id(string s){
@@ -26,9 +35,10 @@ void check_id(string s){
 	}
 }
 
+//almacena temporales
 char *get_temp(void){
-	/* max temporary allocated so far */
-	static int max_temp = 0;
+	
+	static int max_temp = 0;		/* max temporary allocated so far */
 	static char tempname[MAXIDLEN];
 	max_temp++;
 	sprintf(tempname, "Temp&%d", max_temp);
@@ -36,9 +46,11 @@ char *get_temp(void){
 	return tempname;
 }
 
-// Iniciar la llamada.
+//Inicio de compilación
 void start(void){
-	/* Semantic initializations, none needed */
+	match(BEGIN);
+	statement_list();
+	match(END);
 }
 
 // Finalizar.
@@ -47,10 +59,10 @@ void finish(void){
 	generate("Halt", "", "", "");
 }
 
-// Asignar el valor a unas variables.
+// Asignar el valor a las variables (mov var 80).
 void assign(expr_rec target, expr_rec source){
-	/* Generate code for assignment */
-	generate("Store", extract(source), target.name, "");
+
+	generate("mov", extract_exp(source), target.name, "");
 }
 
 // Realiza el proceso de la operación.
@@ -67,18 +79,18 @@ op_rec process_op(void){
 }
 
 expr_rec gen_infix(expr_rec e1, op_rec op, expr_rec e2){
-	expr_rec erec;
+	expr_rec e_rec;
 	/* An expr_rec with temp variant set. */
-	erec.kind = TEMPEXPR;
+	e_rec.kind = TEMPEXPR;
 
 	/*
 	 * Generate code for infix operation.
 	 * Get result temp and set up semantic record
 	 * for result.
 	*/
-	strcpy(erec.name, get_temp());
-	generate(extract(op), extract(e1), extract(e2), erec.name);
-	return erec;
+	strcpy(e_rec.name, get_temp());
+	generate(extract_op(op), extract_exp(e1), extract_exp(e2), e_rec.name);
+	return e_rec;
 }
 
 void read_id(expr_rec in_var){
@@ -109,5 +121,5 @@ expr_rec process_literal(void){
 }
 
 void write_expr(expr_rec out_expr){
-	generate("Write", extract(out_expr), "Integer", "");
+	generate("Write", extract_exp(out_expr), "Integer", "");
 }

@@ -1,5 +1,8 @@
+/*
+	scanner.c
+	Toma el fuente y obtiene los tokens
+*/
 #include "scanner.h"
-//############################################### FUNCIONES SCANNER ###############################################
 
 // Resetea el buffer donde se almacena un token
 void clear_buffer(void){
@@ -21,7 +24,6 @@ void buffer_char(int in_char){
 //Determina si ese token es una palabra reservada
 token check_reserved(void){
 
-	// printf("Se reconocio la palabra reservada: %s\n", token_buffer);
 	if (strcmp(token_buffer, reserved_words[0]) == 0){
 		return BEGIN;
 	}
@@ -42,6 +44,7 @@ void lexical_error(int in_char){
 }
 
 //Lee caracteres y les determina su token
+//Modificar para usar tablad de simbolos
 token scanner(void){
 
 	int in_char, c;

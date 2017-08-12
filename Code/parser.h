@@ -1,3 +1,5 @@
+
+#include "sem_records.h"
 // Variables a utilizar en el parser.h
 
 token current_token;
@@ -6,6 +8,7 @@ token *current_token_ptr;
 token *temp_token_ptr;
 
 // Funciones
+void ident(void);
 
 token next_token(void);
 
@@ -15,11 +18,11 @@ void syntax_error(token tok);
 
 void id_list(void);
 
-void add_op(void);
+void add_op(op_rec *op);
 
-void primary(void);
+void primary(expr_rec *result);
 
-void expression(void);
+void expression(expr_rec *result);
 
 void expr_list(void);
 
