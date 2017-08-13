@@ -5,7 +5,7 @@
 #define MAXIDLEN 33
 typedef char string[MAXIDLEN];
 
-char table_symbol[MAXWORDS][MAXIDLEN];
+
 
 
 //PROPONGO QUITAR ESTO Y USAR SOLO EL expr_rec

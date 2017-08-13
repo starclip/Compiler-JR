@@ -1,0 +1,24 @@
+Declare a Integer 
+Declare Temp&1 Integer 
+ADD 4 4 Temp&1
+Declare Temp&2 Integer 
+SUB Temp&1 Temp&1 Temp&2
+mov Temp&2 a 
+Declare b Integer 
+Declare Temp&3 Integer 
+ADD 5 5 Temp&3
+Declare Temp&4 Integer 
+SUB 14 14 Temp&4
+Declare Temp&5 Integer 
+SUB Temp&3 Temp&3 Temp&5
+Declare Temp&6 Integer 
+ADD Temp&5 Temp&5 Temp&6
+mov Temp&6 b 
+Declare c Integer 
+mov  c 
+Write b Integer 
+Declare g Integer 
+Write g Integer 
+Declare m Integer 
+Write m Integer 
+Halt   

@@ -49,16 +49,32 @@ void recope(){
 
 void generate(string op_code, string op1, string op2, string result_field){
 	// llama a extract()
+	char c1, c2, c3, c4;
+	
+	fprintf(file_sText, "%s %s %s %s\n", op_code, op1, op2, result_field);
 }
 
 char *extract_op(op_rec source){
-	//falta implementar
+	static char assembly_op[3];
+	if (source.operator == MINUS){
+		strcpy(assembly_op, "SUB");
+	}else{
+		strcpy(assembly_op, "ADD");
+	}
+	return assembly_op;
 }
 
+// Todavía presenta errores.
 char *extract_exp(expr_rec source){
-	// Falta implementar
 
-	return source.name;
+	static char assembly_var[MAXIDLEN];
+	if (source.kind == IDEXPR || source.kind == TEMPEXPR){
+		strcpy(assembly_var, source.name);
+		return assembly_var;
+	}else{
+		sprintf(assembly_var, "%d", source.val);
+		return assembly_var;
+	}
 
 }
 
@@ -83,15 +99,17 @@ char *get_temp(void){
 
 //Inicio de compilación
 void start(void){
-	match(BEGIN);
-	statement_list();
-	match(END);
+	// generate section.data
+	file_sData = fopen("sectionData.txt", "w");
+	file_sText = fopen("sectionText.txt", "w");
 }
 
 // Finalizar.
 void finish(void){
 	/* Generate code to finish program. */
 	generate("Halt", "", "", "");
+	fclose(file_sData);
+	fclose(file_sText);
 }
 
 // Asignar el valor a las variables (mov var 80).

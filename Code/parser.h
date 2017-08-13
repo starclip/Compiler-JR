@@ -34,4 +34,4 @@ void program(void);
 
 void system_goal(void);
 
-void read_file(void);
+int read_file(void);

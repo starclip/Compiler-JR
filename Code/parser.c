@@ -23,45 +23,45 @@
 #include "parser.h"
 #include "sem_routines.c"
 
-/* 
 
-Funciones de Next token y match que no sirven :v
-
+/*
 
 token next_token(void){
 	
-	token temp;
 	if (temp_token_ptr == NULL){
-		temp = scanner();
-		temp_token_ptr = &temp;
-		return temp;
+		temp_token = scanner();
+		temp_token_ptr = &temp_token;;
+		//temp_token_ptr = &temp;
+		//return temp;
 	}
-
-	return temp_token;
+	//printf(" * %d\n", *temp_token_ptr);
+	return *temp_token_ptr;
 }
+
 
 void match(token tok){
 
-	token new_temp;
 	if (temp_token_ptr == NULL){
 		temp_token = scanner();
-		printf("Parameters -> %d, Scanner -> %d\n", tok, temp_token);
+		//printf("Parameters -> %d, Scanner -> %d\n", tok, temp_token);
 		if(temp_token == tok){
-			printf("%s\n","True");
+			//printf("%s\n","True");
 			current_token = tok;
 		}else{
 			syntax_error(tok);
 		}
 		return;
 	}
-	new_temp = *temp_token_ptr;
-	printf("Puntero -> %d", new_temp);
-	if (new_temp == tok){
-		current_token = new_temp;
+
+	if (*temp_token_ptr == tok){
+		//printf("Parameters -> %d, Scanner -> %d\n", tok, *temp_token_ptr);
+		current_token = *temp_token_ptr;
 		temp_token_ptr = NULL;
 	}
 }
+
 */
+
 // Match y next_token no funcionan con write o con otros tipos de errores.
 
 token next_token(void){
@@ -78,7 +78,7 @@ void match(token tok){
 
 	token tempTok = next_token();
 	token *temp;
-	//rintf("Parameters -> %d, Scanner -> %d\n", tok, tempTok);
+	//printf("Parameters -> %d, Scanner -> %d\n", tok, tempTok);
 	
 	if (tempTok == tok){
 		current_token = tempTok;
@@ -93,8 +93,9 @@ void match(token tok){
 	
 }
 
+
 void syntax_error(token tok){	//FALTA HACER
-	current_token_ptr = temp_token_ptr;
+
 	if (tok == BEGIN){
 		printf("%s\n", "Error de sintaxis. El BEGIN no va en esa parte.");
 	}else if(tok == END){
@@ -132,7 +133,7 @@ void ident(expr_rec *id_rec){
 }
 
 void id_list(void){		// <id list> ::= ID {  , ID }
-	
+
 	expr_rec id_rec;
 	ident(& id_rec);
 	read_id(id_rec);
@@ -192,14 +193,13 @@ void expression(expr_rec *result){	// <expression> ::= <primary> { <add op> <pri
 	op_rec op;
 
 	primary(&left_operand);	//
-	
-
-	while(next_token() == PLUSOP || next_token() == MINUSOP){
+	token t = next_token();
+	while(t == PLUSOP || t == MINUSOP){
 		add_op(&op);	//
 		primary(&right_operand); //
 		left_operand = gen_infix(left_operand, op, right_operand);
+		t = next_token();
 	}
-	
 	*result = left_operand;
 }
 
@@ -209,8 +209,10 @@ void expr_list(void){		// <expr list> ::= <expression> {  , <expression> }
 	expression(& result); //QUE PARAMETRO SE LE PASA AQUI?
 	write_expr(result);
 	
+	//printf(" ()0 %d\n", *temp_token_ptr);
 	while(next_token() == COMMA){
 		expr_rec result;
+		match(COMMA);
 		expression(& result); //QUE PARAMETRO SE LE PASA AQUI?
 		write_expr(result);
 	}
@@ -220,6 +222,9 @@ void statement(void){	//llama a ident ?
 
 	expr_rec er_id;
 	expr_rec result;
+	/*
+		er_id := <expresion>;
+	*/
 	token tok = next_token();
 
 	switch(tok){
@@ -284,21 +289,25 @@ void system_goal(void){		// <system goal> ::= <program> SCANEOF
 	finish();
 }
 
-void read_file(){
+int read_file(){
 
-	file = fopen("example_1.txt", "r");
+	file = fopen("example_3.txt", "r");
 	if (file == NULL){
 		printf("%s\n", "El archivo no existe.");
+		return 0;
 	}else{
-		return;
+		return 1;
 	}
 	
 }
 
+
 int main(){
 
-	read_file();
+	if (! read_file()){
+		return 0;
+	}
 	system_goal();
-	recope();
+	//recope();
 	return 0;
 }
