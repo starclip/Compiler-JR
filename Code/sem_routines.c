@@ -4,12 +4,47 @@
 #include "sem_routines.h"
 
 //revisa si el parametro se encuentra en la tabla de símbolos
-int lookup(string s){
+int lookup(string word){
 
+	// Si está vacía, no haga nada.
+	if (table.head == NULL){
+		return 0;
+	}
+	// Recorra la tabla de símbolos.
+	table.current = table.head;
+
+	while(table.current != NULL){
+		if (strcmp(word, table.current->values.name) == 0){
+			return 1;
+		}
+		table.temp = table.current;
+		table.current = table.current->next;
+	}
+	table.current = table.temp;
+	return 0;
 }
 
 //ingresa el parametro en la tabla de simbolos
-void enter(string s){
+void enter(string word){
+
+	// Agregué el primer elemento.
+	if (table.head == NULL){
+		table.head = table.current = (struct elem *) malloc (sizeof(struct elem));
+		strcpy(table.current->values.name, word);
+		return;
+	}
+	table.current->next = (struct elem *) malloc (sizeof(struct elem));
+	table.current = table.current->next;
+	strcpy(table.current->values.name, word);
+}
+
+void recope(){
+	table.current = table.head;
+	while(table.current != NULL){
+		printf("%s\n", table.current->values.name);
+		table.current = table.current->next;
+	}
+
 }
 
 void generate(string op_code, string op1, string op2, string result_field){

@@ -23,6 +23,47 @@
 #include "parser.h"
 #include "sem_routines.c"
 
+/* 
+
+Funciones de Next token y match que no sirven :v
+
+
+token next_token(void){
+	
+	token temp;
+	if (temp_token_ptr == NULL){
+		temp = scanner();
+		temp_token_ptr = &temp;
+		return temp;
+	}
+
+	return temp_token;
+}
+
+void match(token tok){
+
+	token new_temp;
+	if (temp_token_ptr == NULL){
+		temp_token = scanner();
+		printf("Parameters -> %d, Scanner -> %d\n", tok, temp_token);
+		if(temp_token == tok){
+			printf("%s\n","True");
+			current_token = tok;
+		}else{
+			syntax_error(tok);
+		}
+		return;
+	}
+	new_temp = *temp_token_ptr;
+	printf("Puntero -> %d", new_temp);
+	if (new_temp == tok){
+		current_token = new_temp;
+		temp_token_ptr = NULL;
+	}
+}
+*/
+// Match y next_token no funcionan con write o con otros tipos de errores.
+
 token next_token(void){
 	
 	if (current_token_ptr == temp_token_ptr || temp_token_ptr == NULL){
@@ -37,7 +78,7 @@ void match(token tok){
 
 	token tempTok = next_token();
 	token *temp;
-	//printf("Parameters -> %d, Scanner -> %d\n", tok, tempTok);
+	//rintf("Parameters -> %d, Scanner -> %d\n", tok, tempTok);
 	
 	if (tempTok == tok){
 		current_token = tempTok;
@@ -48,6 +89,7 @@ void match(token tok){
 	}else{
 		syntax_error(tempTok);
 	}
+	
 	
 }
 
@@ -84,18 +126,22 @@ void syntax_error(token tok){	//FALTA HACER
 	}
 }
 
-void ident(void){
+void ident(expr_rec *id_rec){
 	match(ID);
-	process_id();
+	*id_rec = process_id();
 }
 
 void id_list(void){		// <id list> ::= ID {  , ID }
 	
-	match(ID);
+	expr_rec id_rec;
+	ident(& id_rec);
+	read_id(id_rec);
 
 	while(next_token() == COMMA){
+		expr_rec id_new;
 		match(COMMA);
-		match(ID);
+		ident(& id_new);
+		read_id(id_new);
 	}
 }
 
@@ -121,11 +167,11 @@ void primary(expr_rec *result){
 		case LPAREN: 	// <primary> ::= ( <expression> )
 			match(LPAREN);
 			expression(result);
-			match(RPAREN);
+			match(RPAREN); 
 			break;
 
 		case ID:		// <primary> ::= ID
-			ident();
+			ident(result);
 			break;
 
 		case INTLITERAL:	// <primary> ::= INTLITERAL
@@ -146,36 +192,43 @@ void expression(expr_rec *result){	// <expression> ::= <primary> { <add op> <pri
 	op_rec op;
 
 	primary(&left_operand);	//
+	
 
 	while(next_token() == PLUSOP || next_token() == MINUSOP){
 		add_op(&op);	//
 		primary(&right_operand); //
 		left_operand = gen_infix(left_operand, op, right_operand);
 	}
-
+	
 	*result = left_operand;
 }
 
 void expr_list(void){		// <expr list> ::= <expression> {  , <expression> }
-
-	expression(); //QUE PARAMETRO SE LE PASA AQUI?
-
+	
+	expr_rec result;
+	expression(& result); //QUE PARAMETRO SE LE PASA AQUI?
+	write_expr(result);
+	
 	while(next_token() == COMMA){
-		match(COMMA);
-		expression(); //QUE PARAMETRO SE LE PASA AQUI?
+		expr_rec result;
+		expression(& result); //QUE PARAMETRO SE LE PASA AQUI?
+		write_expr(result);
 	}
 }
 
 void statement(void){	//llama a ident ?
 
+	expr_rec er_id;
+	expr_rec result;
 	token tok = next_token();
 
 	switch(tok){
 		case ID:		//<statement> ::= ID := <expression> ;
-			ident();	
+			ident(& er_id);
 			match(ASSIGNOP);
-			expression();	//QUE PARAMETRO SE LE PASA AQUI?
+			expression(& result);	//QUE PARAMETRO SE LE PASA AQUI?
 			match(SEMICOLON);
+			assign(er_id, result);
 			break;
 
 		case READ:		//<statement> ::= READ ( <id list>) ;
@@ -219,6 +272,9 @@ void statement_list(void){		//<statement list> ::= <statement> { <statement> }
 void program(void){		//<program> ::= begin <statement list> end
 
 	start();
+	match(BEGIN);
+	statement_list();
+	match(END);
 }
 
 void system_goal(void){		// <system goal> ::= <program> SCANEOF
@@ -243,5 +299,6 @@ int main(){
 
 	read_file();
 	system_goal();
+	recope();
 	return 0;
 }

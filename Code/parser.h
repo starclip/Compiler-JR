@@ -8,7 +8,7 @@ token *current_token_ptr;
 token *temp_token_ptr;
 
 // Funciones
-void ident(void);
+void ident(expr_rec *id_rec);
 
 token next_token(void);
 
