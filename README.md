@@ -14,9 +14,16 @@ Scanner
 
 Parser
 - Implementar adecuadamente sintax_error
-- Revisión escrutinia de next_token y match
 - Modificarlo para adaptarlo adecuadamente
 
-Nos falta todo lo demás.
+* Falta implementar funciones en el parser
+- Ensamblador * todo
+- Falta ejercicios 8 y 10
+
+* Falta por arreglar
+- Extract()
+- Generate -> buscar en la tabla de simbolos
+- FUnciones start(), finish().
+
 
 _Tecnológico de Costa Rica - II Semestre 2017_
