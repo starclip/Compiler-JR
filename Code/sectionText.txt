@@ -3,91 +3,88 @@
  	; En esta sección se realizan las operaciones. 	
  	; Se escribe el código necesario para ejecutar.	
  	; Realiza los llamados adecuados.				
+ 
  	; 
- 		
-	ADD 4 2 Temp&1
-	mov Temp&1 a 
-	ADD a 32 Temp&2
-	mov Temp&2 b 
-	ADD 78 d Temp&3
-	mov Temp&3 c 
-	ADD a b Temp&4
-	SUB Temp&4 c Temp&5
-	mov Temp&5 d 
+	; add Literal, result 
+ 	mov [esp + Temp1], 6 
+ 
+	; mov destino, origen 
+ 	; ---------------------------  
+ 	mov r8d, eax  
+ 	mov eax, [esp + a] 
+ 	mov [esp + Temp1], eax 
+ 	mov eax, r8d  
+ 	; ---------------------------  
+ 		; add  op1, Literal, result 
+ 	; ---------------------------  
+ 	mov r8d, eax 
+ 	mov r9d, ebx 
+ 	mov eax, 32 
+ 	mov ebx, [rsp + a] 
+ 	add eax, ebx 
+ 	mov [esp + Temp2], eax 
+ 	mov eax, r8d 
+ 	mov ebx, r9d 
+ 	; ---------------------------  
+ 
+ 	; mov destino, origen 
+ 	; ---------------------------  
+ 	mov r8d, eax  
+ 	mov eax, [esp + b] 
+ 	mov [esp + Temp2], eax 
+ 	mov eax, r8d  
+ 	; ---------------------------  
+ 		; add  op1, Literal, result 
+ 	; ---------------------------  
+ 	mov r8d, eax 
+ 	mov r9d, ebx 
+ 	mov eax, 78 
+ 	mov ebx, [rsp + d] 
+ 	add eax, ebx 
+ 	mov [esp + Temp3], eax 
+ 	mov eax, r8d 
+ 	mov ebx, r9d 
+ 	; ---------------------------  
+ 
+ 	; mov destino, origen 
+ 	; ---------------------------  
+ 	mov r8d, eax  
+ 	mov eax, [esp + c] 
+ 	mov [esp + Temp3], eax 
+ 	mov eax, r8d  
+ 	; ---------------------------  
+ 		; add  op1, op2, result 
+ 	; ---------------------------  
+ 	push eax 
+ 	push ebx 
+ 	mov eax, [rsp + a] 
+ 	mov ebx, [rsp + b] 
+ 	add eax, ebx 
+ 	mov [esp + Temp4], eax 
+ 	pop ebx 
+ 	pop eax 
+ 	; ---------------------------  
+ 
+ 	; sub  op1, op2, result 
+ 	; ---------------------------  
+ 	push eax 
+ 	push ebx 
+ 	mov eax, [rsp + Temp4] 
+ 	mov ebx, [rsp + c] 
+ 	sub eax, ebx 
+ 	mov [esp + Temp5], eax 
+ 	pop ebx 
+ 	pop eax 
+ 	; ---------------------------  
+ 
+ 	; mov destino, origen 
+ 	; ---------------------------  
+ 	mov r8d, eax  
+ 	mov eax, [esp + d] 
+ 	mov [esp + Temp5], eax 
+ 	mov eax, r8d  
+ 	; ---------------------------  
+ 	 
+ 	mov eax, 1 
+ 	int 0x80 
   
- 	; Leer de consola -> read 
- 	; 
- 	push eax 	
- 	push ebx 	
- 	push ecx 	
- 	push edx 	
- 			 	
- 	mov eax, 3 	
- 	mov ebx, 0 	
- 	mov ecx, a 
- 	mov edx, lenght	
- 	int 0x80 	
- 			 	
- 	pop edx 	
- 	pop ecx 	
- 	pop ebx 	
- 	pop eax 	
- 	; 
- 		  
- 	; Leer de consola -> read 
- 	; 
- 	push eax 	
- 	push ebx 	
- 	push ecx 	
- 	push edx 	
- 			 	
- 	mov eax, 3 	
- 	mov ebx, 0 	
- 	mov ecx, b 
- 	mov edx, lenght	
- 	int 0x80 	
- 			 	
- 	pop edx 	
- 	pop ecx 	
- 	pop ebx 	
- 	pop eax 	
- 	; 
- 		  
- 	; Escribir en consola -> read 
- 	; 
- 	push eax 	
- 	push ebx 	
- 	push ecx 	
- 	push edx 	
- 			 	
- 	mov eax, 4 	
- 	mov ebx, 1 	
- 	mov ecx, a 
- 	mov edx, lenght	
- 	int 0x80 	
- 			 	
- 	pop edx 	
- 	pop ecx 	
- 	pop ebx 	
- 	pop eax 	
- 	; 
- 		  
- 	; Escribir en consola -> read 
- 	; 
- 	push eax 	
- 	push ebx 	
- 	push ecx 	
- 	push edx 	
- 			 	
- 	mov eax, 4 	
- 	mov ebx, 1 	
- 	mov ecx, b 
- 	mov edx, lenght	
- 	int 0x80 	
- 			 	
- 	pop edx 	
- 	pop ecx 	
- 	pop ebx 	
- 	pop eax 	
- 	; 
- 		

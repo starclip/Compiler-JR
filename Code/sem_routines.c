@@ -35,6 +35,7 @@ void enter(string word){
 		table.current->values.val = 0;
 		return;
 	}
+	// Agregue el siguiente elemento.
 	tempVal = table.current->values.val;
 	table.current->next = (struct elem *) malloc (sizeof(struct elem));
 	table.current = table.current->next;
@@ -45,7 +46,7 @@ void enter(string word){
 void recope(){
 	table.current = table.head;
 	while(table.current != NULL){
-		printf(" Name - %s - Memory Direction - %d  \n", table.current->values.name, table.current->values.val);
+		// printf(" Name - %s - Memory Direction - %d  \n", table.current->values.name, table.current->values.val);
 		table.current = table.current->next;
 	}
 
@@ -61,9 +62,9 @@ void generate(string op_code, string op1, string op2, string result_field){
 char *extract_op(op_rec source){
 	static char assembly_op[3];
 	if (source.operator == MINUS){
-		strcpy(assembly_op, "SUB");
+		strcpy(assembly_op, "sub");
 	}else{
-		strcpy(assembly_op, "ADD");
+		strcpy(assembly_op, "add");
 	}
 	return assembly_op;
 }
@@ -74,11 +75,10 @@ char *extract_exp(expr_rec source){
 	char *assembly_var = malloc(MAXIDLEN);
 	if (source.kind == IDEXPR || source.kind == TEMPEXPR){
 		strcpy(assembly_var, source.name);
-		return assembly_var;
 	}else{
 		sprintf(assembly_var, "%d", source.val);
-		return assembly_var;
 	}
+	return assembly_var;
 
 }
 
@@ -87,11 +87,10 @@ void check_id(string s){
 	if (! lookup(s)){
 		char *message = malloc(10);
 		enter(s);
-		sprintf(message, "%s db %d", s, table.current->values.val);
+		sprintf(message, "\t%s db %d", s, table.current->values.val);
 
 		current_file = file_sData;
 		fprintf(current_file, "%s \n", message);
-		//generate(message, s, "", "");
 		free(message);
 	}
 }
@@ -102,7 +101,7 @@ char *get_temp(void){
 	static int max_temp = 0;		/* max temporary allocated so far */
 	static char tempname[MAXIDLEN];
 	max_temp++;
-	sprintf(tempname, "Temp&%d", max_temp);
+	sprintf(tempname, "Temp%d", max_temp);
 	check_id(tempname);
 	return tempname;
 }
@@ -113,25 +112,8 @@ void start(void){
 	file_sData = fopen("sectionData.txt", "w");
 	file_sText = fopen("sectionText.txt", "w");
 
-	char *messageData = " section . data  	\n \
-											\n \
-											\n \
-	; -------------------------------------------
-	; En esta sección se declaran las variables. \n \
-	; Se reserva la memoria necesaria.			 \n \
-	; Se declaran las constantes.				 \n \
-	; \n \
-	";
-	char *messageText = " section . text    \n \
-											\n \
-	; En esta sección se realizan las operaciones. 	\n \
-	; Se escribe el código necesario para ejecutar.	\n \
-	; Realiza los llamados adecuados.				\n \
-	; \n \
-		";
-						
 	fprintf(file_sData, "%s \n", messageData);
-	fprintf(file_sText, "%s\n", messageText);
+	fprintf(file_sText, "%s \n", messageText);	
 
 }
 
@@ -139,7 +121,8 @@ void start(void){
 void finish(void){
 	/* Generate code to finish program. */
 	current_file = file_sData;
-	generate("Halt", "", "", "");
+	
+	fprintf(file_sText, "%s \n", messageFinish);
 	fclose(file_sData);
 	fclose(file_sText);
 }
@@ -147,8 +130,16 @@ void finish(void){
 // Asignar el valor a las variables (mov var 80).
 void assign(expr_rec target, expr_rec source){
 
+	char *message;
 	current_file = file_sText;
-	generate("mov", extract_exp(source), target.name, "");
+	if (source.kind == LITERALEXPR){
+		message = messageMovL;
+	}else{
+		message = messageMovID;
+	}
+	current_file = file_sText;
+	fprintf(current_file, message, target.name, source.name);
+	//generate("mov", target.name, extract_exp(source), "");
 }
 
 // Realiza el proceso de la operación.
@@ -164,24 +155,62 @@ op_rec process_op(void){
 	return o;
 }
 
+expr_rec constant_folding(expr_rec e1, op_rec op, expr_rec e2){
+	expr_rec e_rec;
+	char arr[5];
+	e_rec.kind = LITERALEXPR;
+	if (op.operator == MINUS){
+		e_rec.val = e1.val - e2.val;
+		strcpy(arr, "sub");
+	}else{
+		e_rec.val = e1.val + e2.val;
+		strcpy(arr, "add");
+	}
+	strcpy(e_rec.name, get_temp());
+ 
+	char *message = messageTwoLi;
+	current_file = file_sText;
+	fprintf(current_file, message, arr, e_rec.name, extract_exp(e_rec));
+	e_rec.kind = TEMPEXPR;
+	return e_rec;
+
+
+}
+
 expr_rec gen_infix(expr_rec e1, op_rec op, expr_rec e2){
 	expr_rec e_rec;
-	/* An expr_rec with temp variant set. */
+	char *message;
 	e_rec.kind = TEMPEXPR;
 	string op_e1;
 	string op_e2;
+	string op_op;
 
-	/*
-	 * Generate code for infix operation.
-	 * Get result temp and set up semantic record
-	 * for result.
-	*/
-
-	strcpy(op_e1, extract_exp(e1));
-	strcpy(op_e2, extract_exp(e2));
-	strcpy(e_rec.name, get_temp());
 	current_file = file_sText;
-	generate(extract_op(op), op_e1, op_e2, e_rec.name);
+
+	if (e1.kind == LITERALEXPR && e2.kind == LITERALEXPR){
+		return constant_folding(e1, op, e2);
+	}
+
+	if (e1.kind == LITERALEXPR || e2.kind == LITERALEXPR){
+		message = messageOneOne;
+		if (e2.kind == LITERALEXPR){
+			strcpy(op_e1, extract_exp(e2));
+			strcpy(op_e2, extract_exp(e1));
+		}else{
+			strcpy(op_e1, extract_exp(e1));
+			strcpy(op_e2, extract_exp(e2));
+		}
+	}else{
+		message = messageTwoOp;
+		strcpy(op_e1, extract_exp(e1));
+		strcpy(op_e2, extract_exp(e2));
+	}
+
+	strcpy(op_op, extract_op(op));
+	strcpy(e_rec.name, get_temp());
+
+	current_file = file_sText;
+	fprintf(current_file, message, op_op, op_e1, op_e2, op_op, e_rec.name);
 	return e_rec;
 }
 
@@ -189,27 +218,7 @@ void read_id(expr_rec in_var){
 	/* Generate code for read */
 	current_file = file_sText;
 	//generate("Read", in_var.name, "Integer", "");
-
-	char *message = "  \n \
-	; Leer de consola -> read \n \
-	; \n \
-	push eax 	\n \
-	push ebx 	\n \
-	push ecx 	\n \
-	push edx 	\n \
-			 	\n \
-	mov eax, 3 	\n \
-	mov ebx, 0 	\n \
-	mov ecx, %s \n \
-	mov edx, %s	\n \
-	int 0x80 	\n \
-			 	\n \
-	pop edx 	\n \
-	pop ecx 	\n \
-	pop ebx 	\n \
-	pop eax 	\n \
-	; \n \
-		";
+	char *message = messageRead;
 	fprintf(current_file, message, in_var.name, "lenght");
 }
 
@@ -238,25 +247,6 @@ expr_rec process_literal(void){
 void write_expr(expr_rec out_expr){
 	current_file = file_sText;
 	//generate("Write", extract_exp(out_expr), "Integer", "");
-	char *message = "  \n \
-	; Escribir en consola -> read \n \
-	; \n \
-	push eax 	\n \
-	push ebx 	\n \
-	push ecx 	\n \
-	push edx 	\n \
-			 	\n \
-	mov eax, 4 	\n \
-	mov ebx, 1 	\n \
-	mov ecx, %s \n \
-	mov edx, %s	\n \
-	int 0x80 	\n \
-			 	\n \
-	pop edx 	\n \
-	pop ecx 	\n \
-	pop ebx 	\n \
-	pop eax 	\n \
-	; \n \
-		";
+	char *message = messageWrite;
 	fprintf(current_file, message, out_expr.name, "lenght");
 }
