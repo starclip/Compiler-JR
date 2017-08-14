@@ -5,9 +5,11 @@
 FILE *file;
 FILE *file_sData;
 FILE *file_sText;
+FILE *current_file;
 char token_buffer[LEN_TOKEN_BUFFER];
 char reserved_words[4][6] = {"begin", "end", "read", "write"};
 int pos_token_buffer;
+int validate_Enter;
 
 typedef enum token_types{
 

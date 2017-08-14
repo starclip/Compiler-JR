@@ -280,6 +280,7 @@ void program(void){		//<program> ::= begin <statement list> end
 	match(BEGIN);
 	statement_list();
 	match(END);
+	all_comment(); // Desactiva la búsqueda de palabras. Y toma todo como un comentario.
 }
 
 void system_goal(void){		// <system goal> ::= <program> SCANEOF
@@ -291,7 +292,7 @@ void system_goal(void){		// <system goal> ::= <program> SCANEOF
 
 int read_file(){
 
-	file = fopen("example_3.txt", "r");
+	file = fopen("example_1.txt", "r");
 	if (file == NULL){
 		printf("%s\n", "El archivo no existe.");
 		return 0;
@@ -301,6 +302,10 @@ int read_file(){
 	
 }
 
+void all_comment(){
+	validate_Enter = 1;
+}
+
 
 int main(){
 
@@ -308,6 +313,6 @@ int main(){
 		return 0;
 	}
 	system_goal();
-	//recope();
+	recope();
 	return 0;
 }

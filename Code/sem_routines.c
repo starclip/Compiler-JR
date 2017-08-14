@@ -27,21 +27,25 @@ int lookup(string word){
 //ingresa el parametro en la tabla de simbolos
 void enter(string word){
 
+	int tempVal;
 	// Agregué el primer elemento.
 	if (table.head == NULL){
 		table.head = table.current = (struct elem *) malloc (sizeof(struct elem));
 		strcpy(table.current->values.name, word);
+		table.current->values.val = 0;
 		return;
 	}
+	tempVal = table.current->values.val;
 	table.current->next = (struct elem *) malloc (sizeof(struct elem));
 	table.current = table.current->next;
 	strcpy(table.current->values.name, word);
+	table.current->values.val = tempVal + 4;
 }
 
 void recope(){
 	table.current = table.head;
 	while(table.current != NULL){
-		printf("%s\n", table.current->values.name);
+		printf(" Name - %s - Memory Direction - %d  \n", table.current->values.name, table.current->values.val);
 		table.current = table.current->next;
 	}
 
@@ -51,7 +55,7 @@ void generate(string op_code, string op1, string op2, string result_field){
 	// llama a extract()
 	char c1, c2, c3, c4;
 	
-	fprintf(file_sText, "%s %s %s %s\n", op_code, op1, op2, result_field);
+	fprintf(current_file, "\t%s %s %s %s\n", op_code, op1, op2, result_field);
 }
 
 char *extract_op(op_rec source){
@@ -67,7 +71,7 @@ char *extract_op(op_rec source){
 // Todavía presenta errores.
 char *extract_exp(expr_rec source){
 
-	static char assembly_var[MAXIDLEN];
+	char *assembly_var = malloc(MAXIDLEN);
 	if (source.kind == IDEXPR || source.kind == TEMPEXPR){
 		strcpy(assembly_var, source.name);
 		return assembly_var;
@@ -81,8 +85,14 @@ char *extract_exp(expr_rec source){
 void check_id(string s){
 
 	if (! lookup(s)){
+		char *message = malloc(10);
 		enter(s);
-		generate("Declare", s, "Integer", "");
+		sprintf(message, "%s db %d", s, table.current->values.val);
+
+		current_file = file_sData;
+		fprintf(current_file, "%s \n", message);
+		//generate(message, s, "", "");
+		free(message);
 	}
 }
 
@@ -102,11 +112,33 @@ void start(void){
 	// generate section.data
 	file_sData = fopen("sectionData.txt", "w");
 	file_sText = fopen("sectionText.txt", "w");
+
+	char *messageData = " section . data  	\n \
+											\n \
+											\n \
+	; -------------------------------------------
+	; En esta sección se declaran las variables. \n \
+	; Se reserva la memoria necesaria.			 \n \
+	; Se declaran las constantes.				 \n \
+	; \n \
+	";
+	char *messageText = " section . text    \n \
+											\n \
+	; En esta sección se realizan las operaciones. 	\n \
+	; Se escribe el código necesario para ejecutar.	\n \
+	; Realiza los llamados adecuados.				\n \
+	; \n \
+		";
+						
+	fprintf(file_sData, "%s \n", messageData);
+	fprintf(file_sText, "%s\n", messageText);
+
 }
 
 // Finalizar.
 void finish(void){
 	/* Generate code to finish program. */
+	current_file = file_sData;
 	generate("Halt", "", "", "");
 	fclose(file_sData);
 	fclose(file_sText);
@@ -115,6 +147,7 @@ void finish(void){
 // Asignar el valor a las variables (mov var 80).
 void assign(expr_rec target, expr_rec source){
 
+	current_file = file_sText;
 	generate("mov", extract_exp(source), target.name, "");
 }
 
@@ -135,20 +168,49 @@ expr_rec gen_infix(expr_rec e1, op_rec op, expr_rec e2){
 	expr_rec e_rec;
 	/* An expr_rec with temp variant set. */
 	e_rec.kind = TEMPEXPR;
+	string op_e1;
+	string op_e2;
 
 	/*
 	 * Generate code for infix operation.
 	 * Get result temp and set up semantic record
 	 * for result.
 	*/
+
+	strcpy(op_e1, extract_exp(e1));
+	strcpy(op_e2, extract_exp(e2));
 	strcpy(e_rec.name, get_temp());
-	generate(extract_op(op), extract_exp(e1), extract_exp(e2), e_rec.name);
+	current_file = file_sText;
+	generate(extract_op(op), op_e1, op_e2, e_rec.name);
 	return e_rec;
 }
 
 void read_id(expr_rec in_var){
 	/* Generate code for read */
-	generate("Read", in_var.name, "Integer", "");
+	current_file = file_sText;
+	//generate("Read", in_var.name, "Integer", "");
+
+	char *message = "  \n \
+	; Leer de consola -> read \n \
+	; \n \
+	push eax 	\n \
+	push ebx 	\n \
+	push ecx 	\n \
+	push edx 	\n \
+			 	\n \
+	mov eax, 3 	\n \
+	mov ebx, 0 	\n \
+	mov ecx, %s \n \
+	mov edx, %s	\n \
+	int 0x80 	\n \
+			 	\n \
+	pop edx 	\n \
+	pop ecx 	\n \
+	pop ebx 	\n \
+	pop eax 	\n \
+	; \n \
+		";
+	fprintf(current_file, message, in_var.name, "lenght");
 }
 
 expr_rec process_id(void){
@@ -174,5 +236,27 @@ expr_rec process_literal(void){
 }
 
 void write_expr(expr_rec out_expr){
-	generate("Write", extract_exp(out_expr), "Integer", "");
+	current_file = file_sText;
+	//generate("Write", extract_exp(out_expr), "Integer", "");
+	char *message = "  \n \
+	; Escribir en consola -> read \n \
+	; \n \
+	push eax 	\n \
+	push ebx 	\n \
+	push ecx 	\n \
+	push edx 	\n \
+			 	\n \
+	mov eax, 4 	\n \
+	mov ebx, 1 	\n \
+	mov ecx, %s \n \
+	mov edx, %s	\n \
+	int 0x80 	\n \
+			 	\n \
+	pop edx 	\n \
+	pop ecx 	\n \
+	pop ebx 	\n \
+	pop eax 	\n \
+	; \n \
+		";
+	fprintf(current_file, message, out_expr.name, "lenght");
 }

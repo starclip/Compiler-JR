@@ -35,3 +35,5 @@ void program(void);
 void system_goal(void);
 
 int read_file(void);
+
+void all_comment(void);

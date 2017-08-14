@@ -1,0 +1,33 @@
+ section . data  	
+ 											
+ 											
+ 	; En esta sección se declaran las variables. 
+ 	; Se reserva la memoria necesaria.			 
+ 	; Se declaran las constantes.				 
+ 	; 
+ 	 length db 32
+a db 0 
+Temp&1 db 4 
+b db 8 
+Temp&2 db 12 
+c db 16 
+d db 20 
+Temp&3 db 24 
+Temp&4 db 28 
+Temp&5 db 32 
+	Halt   
+
+
+[esp + b] -> 0;
+
+add op1, op2, var
+
+	push eax
+	push ebx
+	mov ax, [rsp + op1]
+	mov bx, [rsp + op2]
+	add eax, ebx
+	mov [rsp + var], ax
+
+
+

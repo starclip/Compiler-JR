@@ -3,6 +3,6 @@ begin
     b := a + 32;
     c := 78 + d;
     d := a + b - c;
+    read(a,b);
     write(a,b);
 end
-

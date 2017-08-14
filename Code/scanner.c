@@ -52,7 +52,7 @@ token scanner(void){
 
 	while ((in_char = getc(file)) != EOF){	//Obtener caracteres hasta el fin de archivo
 
-		if (isspace(in_char)){
+		if (isspace(in_char) || validate_Enter== 1){
 			continue;	// Ignora los espacios
 
 		}else if (isalpha(in_char)){ // es un caracter alfabetico
