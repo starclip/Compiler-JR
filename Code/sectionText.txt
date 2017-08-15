@@ -1,88 +1,148 @@
- section . text    
+section .text    
  											
  	; En esta sección se realizan las operaciones. 	
  	; Se escribe el código necesario para ejecutar.	
  	; Realiza los llamados adecuados.				
  
- 	; 
-	; add Literal, result 
- 	mov [esp + Temp1], 6 
+ global    _start   
+ 											
+ start:  	
+ 
+	; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 0], ax   
+ 
+ 	; a := 100000000000000000000000000 16 ceros -> 
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 4], ax   
+ 
+ 		; add Literal, result 
+ 	mov eax, 6        
+ 	mov [esp + 4], ax 
  
 	; mov destino, origen 
  	; ---------------------------  
- 	mov r8d, eax  
- 	mov eax, [esp + a] 
- 	mov [esp + Temp1], eax 
- 	mov eax, r8d  
+ 	mov ecx, eax  
+ 	mov eax, [esp + 4] 
+ 	mov [esp + 0], ax 
+ 	mov eax, ecx  
  	; ---------------------------  
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 8], ax   
+ 
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 12], ax   
+ 
  		; add  op1, Literal, result 
  	; ---------------------------  
- 	mov r8d, eax 
- 	mov r9d, ebx 
+ 	mov ecx, eax 
+ 	mov edx, ebx 
  	mov eax, 32 
- 	mov ebx, [rsp + a] 
+ 	mov ebx, [esp + 0] 
  	add eax, ebx 
- 	mov [esp + Temp2], eax 
- 	mov eax, r8d 
- 	mov ebx, r9d 
+ 	mov [esp + 12], ax 
+ 	mov eax, ecx 
+ 	mov ebx, edx 
  	; ---------------------------  
  
  	; mov destino, origen 
  	; ---------------------------  
- 	mov r8d, eax  
- 	mov eax, [esp + b] 
- 	mov [esp + Temp2], eax 
- 	mov eax, r8d  
+ 	mov ecx, eax  
+ 	mov eax, [esp + 12] 
+ 	mov [esp + 8], ax 
+ 	mov eax, ecx  
  	; ---------------------------  
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 16], ax   
+ 
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 20], ax   
+ 
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 24], ax   
+ 
  		; add  op1, Literal, result 
  	; ---------------------------  
- 	mov r8d, eax 
- 	mov r9d, ebx 
+ 	mov ecx, eax 
+ 	mov edx, ebx 
  	mov eax, 78 
- 	mov ebx, [rsp + d] 
+ 	mov ebx, [esp + 20] 
  	add eax, ebx 
- 	mov [esp + Temp3], eax 
- 	mov eax, r8d 
- 	mov ebx, r9d 
+ 	mov [esp + 24], ax 
+ 	mov eax, ecx 
+ 	mov ebx, edx 
  	; ---------------------------  
  
  	; mov destino, origen 
  	; ---------------------------  
- 	mov r8d, eax  
- 	mov eax, [esp + c] 
- 	mov [esp + Temp3], eax 
- 	mov eax, r8d  
+ 	mov ecx, eax  
+ 	mov eax, [esp + 24] 
+ 	mov [esp + 16], ax 
+ 	mov eax, ecx  
  	; ---------------------------  
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 28], ax   
+ 
  		; add  op1, op2, result 
  	; ---------------------------  
  	push eax 
  	push ebx 
- 	mov eax, [rsp + a] 
- 	mov ebx, [rsp + b] 
+ 	mov eax, [esp + 0] 
+ 	mov ebx, [esp + 8] 
  	add eax, ebx 
- 	mov [esp + Temp4], eax 
+ 	mov [esp + 28], ax 
  	pop ebx 
  	pop eax 
  	; ---------------------------  
  
- 	; sub  op1, op2, result 
+ 	; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 32], ax   
+ 
+ 		; sub  op1, op2, result 
  	; ---------------------------  
  	push eax 
  	push ebx 
- 	mov eax, [rsp + Temp4] 
- 	mov ebx, [rsp + c] 
+ 	mov eax, [esp + 28] 
+ 	mov ebx, [esp + 16] 
  	sub eax, ebx 
- 	mov [esp + Temp5], eax 
+ 	mov [esp + 32], ax 
  	pop ebx 
  	pop eax 
  	; ---------------------------  
  
  	; mov destino, origen 
  	; ---------------------------  
- 	mov r8d, eax  
- 	mov eax, [esp + d] 
- 	mov [esp + Temp5], eax 
- 	mov eax, r8d  
+ 	mov ecx, eax  
+ 	mov eax, [esp + 32] 
+ 	mov [esp + 20], ax 
+ 	mov eax, ecx  
+ 	; ---------------------------  
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 36], ax   
+ 
+ 		; movLiteral destino, origen L 
+ 	; ---------------------------  
+ 	mov eax, 5         
+ 	mov [esp + 36], ax  
  	; ---------------------------  
  	 
  	mov eax, 1 

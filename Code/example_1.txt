@@ -3,4 +3,5 @@ begin
     b := a + 32;
     c := 78 + d;
     d := a + b - c;
+    e := 5;
 end

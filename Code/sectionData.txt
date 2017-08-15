@@ -1,16 +1,17 @@
- section . data  	
+section .data  	
  											
  	; En esta sección se declaran las variables. 
  	; Se reserva la memoria necesaria.			 
  	; Se declaran las constantes.				 
  
  	; 
-	a db 0 
-	Temp1 db 4 
-	b db 8 
-	Temp2 db 12 
-	c db 16 
-	d db 20 
-	Temp3 db 24 
-	Temp4 db 28 
-	Temp5 db 32 
+	a db 0
+	Temp1 db 4
+	b db 8
+	Temp2 db 12
+	c db 16
+	d db 20
+	Temp3 db 24
+	Temp4 db 28
+	Temp5 db 32
+	e db 36

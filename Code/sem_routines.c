@@ -3,7 +3,7 @@
 
 #include "sem_routines.h"
 
-//revisa si el parametro se encuentra en la tabla de símbolos
+//revisa si el parametro se encuentra en la tabla de símbolos -> retorna uno si esta.
 int lookup(string word){
 
 	// Si está vacía, no haga nada.
@@ -74,7 +74,10 @@ char *extract_exp(expr_rec source){
 
 	char *assembly_var = malloc(MAXIDLEN);
 	if (source.kind == IDEXPR || source.kind == TEMPEXPR){
-		strcpy(assembly_var, source.name);
+		//strcpy(assembly_var, source.name);
+		if (lookup(source.name)){
+			sprintf(assembly_var, "%d", table.current->values.val);
+		}
 	}else{
 		sprintf(assembly_var, "%d", source.val);
 	}
@@ -87,10 +90,11 @@ void check_id(string s){
 	if (! lookup(s)){
 		char *message = malloc(10);
 		enter(s);
-		sprintf(message, "\t%s db %d", s, table.current->values.val);
-
+		sprintf(message, "%d", table.current->values.val);
 		current_file = file_sData;
-		fprintf(current_file, "%s \n", message);
+		fprintf(current_file, "\t%s db %s\n", s, message);
+		current_file = file_sText;
+		fprintf(current_file, messageDec, message);
 		free(message);
 	}
 }
@@ -137,9 +141,9 @@ void assign(expr_rec target, expr_rec source){
 	}else{
 		message = messageMovID;
 	}
+
 	current_file = file_sText;
-	fprintf(current_file, message, target.name, source.name);
-	//generate("mov", target.name, extract_exp(source), "");
+	fprintf(current_file, message, extract_exp(source), extract_exp(target));
 }
 
 // Realiza el proceso de la operación.
@@ -157,6 +161,7 @@ op_rec process_op(void){
 
 expr_rec constant_folding(expr_rec e1, op_rec op, expr_rec e2){
 	expr_rec e_rec;
+	char *temp = malloc(10);
 	char arr[5];
 	e_rec.kind = LITERALEXPR;
 	if (op.operator == MINUS){
@@ -169,9 +174,11 @@ expr_rec constant_folding(expr_rec e1, op_rec op, expr_rec e2){
 	strcpy(e_rec.name, get_temp());
  
 	char *message = messageTwoLi;
+	sprintf(temp, "%d", table.current->values.val);
 	current_file = file_sText;
-	fprintf(current_file, message, arr, e_rec.name, extract_exp(e_rec));
+	fprintf(current_file, message, arr, extract_exp(e_rec), temp);
 	e_rec.kind = TEMPEXPR;
+	free(temp);
 	return e_rec;
 
 
@@ -210,7 +217,7 @@ expr_rec gen_infix(expr_rec e1, op_rec op, expr_rec e2){
 	strcpy(e_rec.name, get_temp());
 
 	current_file = file_sText;
-	fprintf(current_file, message, op_op, op_e1, op_e2, op_op, e_rec.name);
+	fprintf(current_file, message, op_op, op_e1, op_e2, op_op, extract_exp(e_rec));
 	return e_rec;
 }
 

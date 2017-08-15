@@ -1,18 +1,20 @@
 // Rutinas semánticas.
 
-char *messageData = " section . data  	\n \
+char *messageData = "section .data  	\n \
 											\n \
 	; En esta sección se declaran las variables. \n \
 	; Se reserva la memoria necesaria.			 \n \
 	; Se declaran las constantes.				 \n \n \
 	;";
 
-char *messageText = " section . text    \n \
+char *messageText = "section .text    \n \
 											\n \
 	; En esta sección se realizan las operaciones. 	\n \
 	; Se escribe el código necesario para ejecutar.	\n \
 	; Realiza los llamados adecuados.				\n \n \
-	;";
+global    _start   \n \
+											\n \
+_start:  	\n \n ";
 
 char *messageFinish = " \n \
 	mov eax, 1 \n \
@@ -65,43 +67,51 @@ char *messageTwoOp = "\t; %s  op1, op2, result \n \
 	; ---------------------------  \n \
 	push eax \n \
 	push ebx \n \
-	mov eax, [rsp + %s] \n \
-	mov ebx, [rsp + %s] \n \
+	mov eax, [esp + %s] \n \
+	mov ebx, [esp + %s] \n \
 	%s eax, ebx \n \
-	mov [esp + %s], eax \n \
+	mov [esp + %s], ax \n \
 	pop ebx \n \
 	pop eax \n \
 	; ---------------------------  \n \n ";
 
 
 char *messageTwoLi = "\t; %s Literal, result \n \
-	mov [esp + %s], %s \n \n";
+	mov eax, %s        \n \
+	mov [esp + %s], ax \n \n";
 
 char *messageOneOne = "\t; %s  op1, Literal, result \n \
 	; ---------------------------  \n \
-	mov r8d, eax \n \
-	mov r9d, ebx \n \
+	mov ecx, eax \n \
+	mov edx, ebx \n \
 	mov eax, %s \n \
-	mov ebx, [rsp + %s] \n \
+	mov ebx, [esp + %s] \n \
 	%s eax, ebx \n \
-	mov [esp + %s], eax \n \
-	mov eax, r8d \n \
-	mov ebx, r9d \n \
+	mov [esp + %s], ax \n \
+	mov eax, ecx \n \
+	mov ebx, edx \n \
 	; ---------------------------  \n \n ";
 
 char *messageMovID = "\t; mov destino, origen \n \
 	; ---------------------------  \n \
-	mov r8d, eax  \n \
+	mov ecx, eax  \n \
 	mov eax, [esp + %s] \n \
-	mov [esp + %s], eax \n \
-	mov eax, r8d  \n \
+	mov [esp + %s], ax \n \
+	mov eax, ecx  \n \
 	; ---------------------------  \n \
 	";
 
-char *messageMovL = "\t; mov destino, origen \n \
+char *messageMovL = "\t; movLiteral destino, origen L \n \
 	; ---------------------------  \n \
-	mov [esp + %s], %s  \n \
+	mov eax, %s         \n \
+	mov [esp + %s], ax  \n \
 	; ---------------------------  \n \
+	";
+
+char *messageDec = "\t; declare variable \n \
+	; ---------------------------  \n \
+	mov eax, 0				 \n \
+	mov [esp + %s], ax   \n \n \
 	";
 
 
