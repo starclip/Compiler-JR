@@ -287,5 +287,6 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 	system_goal();
+	recope();
 	return 0;
 }

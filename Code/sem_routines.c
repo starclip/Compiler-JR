@@ -50,7 +50,7 @@ void enter(string word){
 	table.current->next = (struct elem *) malloc (sizeof(struct elem));
 	table.current = table.current->next;
 	strcpy(table.current->values.name, word);
-	table.current->values.val = tempVal + 4;
+	table.current->values.val = tempVal + 1;
 }
 
 void recope(){
@@ -82,11 +82,13 @@ char *extract_op(op_rec source){
 // Todavía presenta errores.
 char *extract_exp(expr_rec source){
 
+	int table_pos;
 	char *assembly_var = malloc(MAXIDLEN);
 	if (source.kind == IDEXPR || source.kind == TEMPEXPR){
 		//strcpy(assembly_var, source.name);
 		if (lookup(source.name)){
-			sprintf(assembly_var, "%d", table.current->values.val);
+			table_pos = table.current->values.val * 4;
+			sprintf(assembly_var, "%d", table_pos);
 		}
 	}else{
 		sprintf(assembly_var, "%d", source.val);
@@ -98,14 +100,11 @@ char *extract_exp(expr_rec source){
 void check_id(string s){
 
 	if (! lookup(s)){
-		char *message = malloc(10);
+		char *message;
 		enter(s);
-		sprintf(message, "%d", table.current->values.val);
-		current_file = file_sData;
-		fprintf(current_file, "\t%s db %s\n", s, message);
-		current_file = file_sText;
-		fprintf(current_file, messageDec, message);
-		free(message);
+		message = messageDec;
+		current_file = file_push;
+		fprintf(current_file, "%s",message);
 	}
 }
 
@@ -124,21 +123,31 @@ char *get_temp(void){
 void start(void){
 	// generate section.data
 	file_sData = fopen("sectionData.txt", "w");
-	file_sText = fopen("sectionText.txt", "w");
+	file_sText = fopen("sectionCode.txt", "w");
+	file_push = fopen("sectionText.txt", "w");
 
 	fprintf(file_sData, "%s \n", messageData);
-	fprintf(file_sText, "%s \n", messageText);	
+	fprintf(file_push, "%s \n", messageText);	
 
 }
 
 // Finalizar.
 void finish(void){
 	/* Generate code to finish program. */
+	char c;
 	current_file = file_sData;
+	fclose(file_sText);
+
+	file_sText = fopen("sectionCode.txt", "r");
+	while((c = fgetc(file_sText)) != EOF){
+		fputc(c, file_push);
+	}
+
 	
-	fprintf(file_sText, "%s \n", messageFinish);
+	fprintf(file_push, "%s \n", messageFinish);
 	fclose(file_sData);
 	fclose(file_sText);
+	fclose(file_push);
 }
 
 // Asignar el valor a las variables (mov var 80).
@@ -173,6 +182,7 @@ expr_rec constant_folding(expr_rec e1, op_rec op, expr_rec e2){
 	expr_rec e_rec;
 	char *temp = malloc(10);
 	char arr[5];
+	int table_pos;
 	e_rec.kind = LITERALEXPR;
 	if (op.operator == MINUS){
 		e_rec.val = e1.val - e2.val;
@@ -184,7 +194,8 @@ expr_rec constant_folding(expr_rec e1, op_rec op, expr_rec e2){
 	strcpy(e_rec.name, get_temp());
  
 	char *message = messageTwoLi;
-	sprintf(temp, "%d", table.current->values.val);
+	table_pos = table.current->values.val * 4;
+	sprintf(temp, "%d", table_pos);
 	current_file = file_sText;
 	fprintf(current_file, message, arr, extract_exp(e_rec), temp);
 	e_rec.kind = TEMPEXPR;
@@ -253,7 +264,7 @@ void read_id(expr_rec in_var){
 	current_file = file_sText;
 	//generate("Read", in_var.name, "Integer", "");
 	char *message = messageRead;
-	fprintf(current_file, message, in_var.name, "lenght");
+	fprintf(current_file, message, extract_exp(in_var));
 }
 
 expr_rec process_id(void){
@@ -282,5 +293,5 @@ void write_expr(expr_rec out_expr){
 	current_file = file_sText;
 	//generate("Write", extract_exp(out_expr), "Integer", "");
 	char *message = messageWrite;
-	fprintf(current_file, message, out_expr.name, "lenght");
+	fprintf(current_file, message, extract_exp(out_expr));
 }

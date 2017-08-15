@@ -1,18 +1,19 @@
-section .data  	
+section     .data	  	
  											
+ 	;-------------------------------------------- 
  	; En esta sección se declaran las variables. 
  	; Se reserva la memoria necesaria.			 
  	; Se declaran las constantes.				 
- 
- 	; 
-	a db 0
-	Temp1 db 4
-	Temp2 db 8
-	b db 12
-	Temp3 db 16
-	Temp4 db 20
-	Temp5 db 24
-	Temp6 db 28
-	c db 32
-	g db 36
-	m db 40
+ 	;------------------------------------------- 
+ 												 
+ 	global buffer_input   ; Buffer donde se almacenarán los valores.			
+ 	global len_input	  ; largo del buffer.									
+ 	global buffer_output  ; Buffer donde se escribirán los valores a imprimir.	
+ 	global len_output	  ; largo del buffer.									
+ 																				
+ 	buffer_input  db '*******************************', 0xa						
+ 	len_input      equ $ - buffer_input											
+ 	buffer_output db '*******************************', 0xa                     
+ 	len_output      equ $ - buffer_input 										
+ 	
+  

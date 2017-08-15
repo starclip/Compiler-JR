@@ -1,5 +1,9 @@
-begin a := 10;
-b := (c|(8+9)|0);
-z := j+k);
-write(b);
+begin 
+	a := 10;
+	b := c + 15;
+	d := 11 + 9;
+	e := a + b + c;
+	f := e - a;
+	read(m);
+	write(e);
 end

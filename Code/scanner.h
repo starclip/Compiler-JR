@@ -14,6 +14,7 @@
 FILE *file;
 FILE *file_sData;
 FILE *file_sText;
+FILE *file_push;
 FILE *current_file;
 char token_buffer[LEN_TOKEN_BUFFER];
 char reserved_words[4][6] = {"begin", "end", "read", "write"};
