@@ -1,7 +1,15 @@
 /*
-	scanner.c
+	scanner.c 
 	Toma el fuente y obtiene los tokens
+
+	COMPILADOR MICRO -> x86
+
+	Created by: 
+		Jason Barrantes Arce.
+		Randy Morales Gamboa
+
 */
+
 #include "scanner.h"
 
 // Resetea el buffer donde se almacena un token
@@ -44,7 +52,6 @@ void lexical_error(int in_char){
 }
 
 //Lee caracteres y les determina su token
-//Modificar para usar tablad de simbolos
 token scanner(void){
 
 	int in_char, c;

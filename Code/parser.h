@@ -1,6 +1,15 @@
+/*
+	parser.h
+
+	COMPILADOR MICRO -> x86
+
+	Created by: 
+		Jason Barrantes Arce.
+		Randy Morales Gamboa.
+
+*/
 
 #include "sem_records.h"
-// Variables a utilizar en el parser.h
 
 token current_token;
 token temp_token;
@@ -34,6 +43,6 @@ void program(void);
 
 void system_goal(void);
 
-int read_file(void);
+int read_file(char * file_name);
 
 void all_comment(void);

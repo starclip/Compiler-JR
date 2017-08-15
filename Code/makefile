@@ -4,13 +4,11 @@
 #
 #	Created by: 
 #		Jason Barrantes Arce.
-#		Randy Morales Gamboa
+#		Randy Morales Gamboa.
 #
-
-#< inputfile.txt
 
 compiler.o: parser.c 
 	gcc parser.c -o compiler
-	./compiler
+	./compiler $(file)
 
 

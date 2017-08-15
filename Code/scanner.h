@@ -1,7 +1,16 @@
-// Constantes
+/*
+	scanner.h
+
+	COMPILADOR MICRO -> x86
+
+	Created by: 
+		Jason Barrantes Arce.
+		Randy Morales Gamboa
+
+*/
+
 #define LEN_TOKEN_BUFFER  30
 
-// Variables globales
 FILE *file;
 FILE *file_sData;
 FILE *file_sText;
@@ -20,8 +29,6 @@ typedef enum token_types{
 
 } token;
 
-
-// Funciones
 
 void clear_buffer(void);
 

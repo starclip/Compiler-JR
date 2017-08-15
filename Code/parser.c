@@ -12,7 +12,7 @@
 
 	Created by: 
 		Jason Barrantes Arce.
-		Randy Morales Gamboa
+		Randy Morales Gamboa.
 */
 
 #include <stdio.h>
@@ -37,7 +37,6 @@ void match(token tok){
 
 	token tempTok = next_token();
 	token *temp;
-	//printf("Parameters -> %d, Scanner -> %d\n", tok, tempTok);
 	
 	if (tempTok == tok){
 		current_token = tempTok;
@@ -53,12 +52,9 @@ void match(token tok){
 			syntax_error(tempTok);
 		}
 	}
-	
-	
 }
 
-
-void syntax_error(token tok){	//FALTA HACER
+void syntax_error(token tok){
 
 	switch(tok){
 
@@ -149,7 +145,7 @@ void expression(expr_rec *result){	// <expression> ::= <primary> { <add op> <pri
 	expr_rec left_operand, center_operand, right_operand;
 	op_rec op;
 
-	primary(&left_operand);	//
+	primary(&left_operand);	
 	token t = next_token();
 
 	if(t == PIPE){
@@ -174,8 +170,8 @@ void expression(expr_rec *result){	// <expression> ::= <primary> { <add op> <pri
 
 
 	while(t == PLUSOP || t == MINUSOP){
-		add_op(&op);	//
-		primary(&right_operand); //
+		add_op(&op);
+		primary(&right_operand);
 		left_operand = gen_infix(left_operand, op, right_operand);
 		t = next_token();
 	}
@@ -183,28 +179,25 @@ void expression(expr_rec *result){	// <expression> ::= <primary> { <add op> <pri
 	*result = left_operand;
 }
 
-void expr_list(void){		// <expr list> ::= <expression> {  , <expression> }
+void expr_list(void){	// <expr list> ::= <expression> {  , <expression> }
 	
 	expr_rec result;
-	expression(& result); //QUE PARAMETRO SE LE PASA AQUI?
+	expression(& result);
 	write_expr(result);
 	
-	//printf(" ()0 %d\n", *temp_token_ptr);
 	while(next_token() == COMMA){
 		expr_rec result;
 		match(COMMA);
-		expression(& result); //QUE PARAMETRO SE LE PASA AQUI?
+		expression(& result);
 		write_expr(result);
 	}
 }
 
-void statement(void){	//llama a ident ?
+void statement(void){
 
-	expr_rec er_id;
+	expr_rec er_id;		//er_id := <expresion>;
 	expr_rec result;
-	/*
-		er_id := <expresion>;
-	*/
+
 	token tok = next_token();
 
 	switch(tok){
@@ -238,7 +231,7 @@ void statement(void){	//llama a ident ?
 	}
 }
 
-void statement_list(void){		//<statement list> ::= <statement> { <statement> }
+void statement_list(void){	//<statement list> ::= <statement> { <statement> }
 
 	statement();
 	while(0 == 0){
@@ -270,9 +263,9 @@ void system_goal(void){		// <system goal> ::= <program> SCANEOF
 	finish();
 }
 
-int read_file(){
+int read_file(char * file_name){
 
-	file = fopen("example_1.txt", "r");
+	file = fopen(file_name, "r");
 	if (file == NULL){
 		printf("%s\n", "El archivo no existe.");
 		return 0;
@@ -287,12 +280,12 @@ void all_comment(){
 }
 
 
-int main(){
+int main(int argc, char *argv[]){
 
-	if (! read_file()){
+	if (! read_file(argv[1])){
+		printf("Cantidad incorrecta de parámetros.\n");
 		return 0;
 	}
 	system_goal();
-	//recope();
 	return 0;
 }

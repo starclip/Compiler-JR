@@ -14,82 +14,183 @@ section .text
  	mov eax, 0				 
  	mov [esp + 0], ax   
  
- 		; movLiteral destino, origen L 
- 	; ---------------------------  
- 	mov eax, 10         
- 	mov [esp + 0], ax  
- 	; ---------------------------  
  		; declare variable 
  	; ---------------------------  
  	mov eax, 0				 
  	mov [esp + 4], ax   
  
- 		; declare variable 
- 	; ---------------------------  
- 	mov eax, 0				 
- 	mov [esp + 8], ax   
- 
- 		; declare variable 
- 	; ---------------------------  
- 	mov eax, 0				 
- 	mov [esp + 12], ax   
- 
  		; add Literal, result 
- 	mov eax, 17        
- 	mov [esp + 12], ax 
+ 	mov eax, 5        
+ 	mov [esp + 4], ax 
  
 	; declare variable 
  	; ---------------------------  
  	mov eax, 0				 
- 	mov [esp + 16], ax   
+ 	mov [esp + 8], ax   
  
- 		; mov destino, origen 
+ 		; sub  op1, Literal, result 
  	; ---------------------------  
- 	mov ecx, eax  
- 	mov eax, [esp + 16] 
- 	mov [esp + 4], ax 
- 	mov eax, ecx  
- 	; ---------------------------  
- 		; declare variable 
- 	; ---------------------------  
- 	mov eax, 0				 
- 	mov [esp + 20], ax   
- 
- 		; declare variable 
- 	; ---------------------------  
- 	mov eax, 0				 
- 	mov [esp + 24], ax   
- 
- 		; declare variable 
- 	; ---------------------------  
- 	mov eax, 0				 
- 	mov [esp + 28], ax   
- 
- 		; declare variable 
- 	; ---------------------------  
- 	mov eax, 0				 
- 	mov [esp + 32], ax   
- 
- 		; add  op1, op2, result 
- 	; ---------------------------  
- 	push eax 
- 	push ebx 
- 	mov eax, [esp + 24] 
- 	mov ebx, [esp + 28] 
- 	add eax, ebx 
- 	mov [esp + 32], ax 
- 	pop ebx 
- 	pop eax 
+ 	mov ecx, eax 
+ 	mov edx, ebx 
+ 	mov eax, 5 
+ 	mov ebx, [esp + 4] 
+ 	sub eax, ebx 
+ 	mov [esp + 8], ax 
+ 	mov eax, ecx 
+ 	mov ebx, edx 
  	; ---------------------------  
  
  	; mov destino, origen 
  	; ---------------------------  
  	mov ecx, eax  
- 	mov eax, [esp + 32] 
- 	mov [esp + 20], ax 
+ 	mov eax, [esp + 8] 
+ 	mov [esp + 0], ax 
  	mov eax, ecx  
  	; ---------------------------  
- 	 
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 12], ax   
+ 
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 16], ax   
+ 
+ 		; add Literal, result 
+ 	mov eax, 49        
+ 	mov [esp + 16], ax 
+ 
+	; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 20], ax   
+ 
+ 		; sub Literal, result 
+ 	mov eax, 5        
+ 	mov [esp + 20], ax 
+ 
+	; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 24], ax   
+ 
+ 		; sub  op1, op2, result 
+ 	; ---------------------------  
+ 	push eax 
+ 	push ebx 
+ 	mov eax, [esp + 16] 
+ 	mov ebx, [esp + 20] 
+ 	sub eax, ebx 
+ 	mov [esp + 24], ax 
+ 	pop ebx 
+ 	pop eax 
+ 	; ---------------------------  
+ 
+ 	; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 28], ax   
+ 
+ 		; add  op1, Literal, result 
+ 	; ---------------------------  
+ 	mov ecx, eax 
+ 	mov edx, ebx 
+ 	mov eax, 41 
+ 	mov ebx, [esp + 24] 
+ 	add eax, ebx 
+ 	mov [esp + 28], ax 
+ 	mov eax, ecx 
+ 	mov ebx, edx 
+ 	; ---------------------------  
+ 
+ 	; mov destino, origen 
+ 	; ---------------------------  
+ 	mov ecx, eax  
+ 	mov eax, [esp + 28] 
+ 	mov [esp + 12], ax 
+ 	mov eax, ecx  
+ 	; ---------------------------  
+ 		; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 32], ax   
+ 
+ 		; mov destino, origen 
+ 	; ---------------------------  
+ 	mov ecx, eax  
+ 	mov eax, [esp + ] 
+ 	mov [esp + 32], ax 
+ 	mov eax, ecx  
+ 	; ---------------------------  
+ 	  
+ 	; Escribir en consola -> write 
+ 	; 
+ 	push eax 	
+ 	push ebx 	
+ 	push ecx 	
+ 	push edx 	
+ 			 	
+ 	mov eax, 4 	; EAX -> write  
+ 	mov ebx, 1 	; EBX -> input  
+ 	mov ecx, b ; ECX -> valor que se va a imprimir     
+ 	mov edx, lenght	; EDX -> largo de lo que voy a escribir 
+ 	int 0x80 	; llamada al sistema operativo      
+ 			 	
+ 	pop edx 	
+ 	pop ecx 	
+ 	pop ebx 	
+ 	pop eax 	
+ 	; 
+ 			; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 36], ax   
+ 
+ 	  
+ 	; Escribir en consola -> write 
+ 	; 
+ 	push eax 	
+ 	push ebx 	
+ 	push ecx 	
+ 	push edx 	
+ 			 	
+ 	mov eax, 4 	; EAX -> write  
+ 	mov ebx, 1 	; EBX -> input  
+ 	mov ecx, g ; ECX -> valor que se va a imprimir     
+ 	mov edx, lenght	; EDX -> largo de lo que voy a escribir 
+ 	int 0x80 	; llamada al sistema operativo      
+ 			 	
+ 	pop edx 	
+ 	pop ecx 	
+ 	pop ebx 	
+ 	pop eax 	
+ 	; 
+ 			; declare variable 
+ 	; ---------------------------  
+ 	mov eax, 0				 
+ 	mov [esp + 40], ax   
+ 
+ 	  
+ 	; Escribir en consola -> write 
+ 	; 
+ 	push eax 	
+ 	push ebx 	
+ 	push ecx 	
+ 	push edx 	
+ 			 	
+ 	mov eax, 4 	; EAX -> write  
+ 	mov ebx, 1 	; EBX -> input  
+ 	mov ecx, m ; ECX -> valor que se va a imprimir     
+ 	mov edx, lenght	; EDX -> largo de lo que voy a escribir 
+ 	int 0x80 	; llamada al sistema operativo      
+ 			 	
+ 	pop edx 	
+ 	pop ecx 	
+ 	pop ebx 	
+ 	pop eax 	
+ 	; 
+ 		 
  	mov eax, 1 
  	int 0x80 
   

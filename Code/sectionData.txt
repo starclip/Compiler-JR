@@ -6,11 +6,13 @@ section .data
  
  	; 
 	a db 0
-	b db 4
-	c db 8
-	Temp1 db 12
-	Temp2 db 16
-	z db 20
-	j db 24
-	k db 28
-	Temp3 db 32
+	Temp1 db 4
+	Temp2 db 8
+	b db 12
+	Temp3 db 16
+	Temp4 db 20
+	Temp5 db 24
+	Temp6 db 28
+	c db 32
+	g db 36
+	m db 40

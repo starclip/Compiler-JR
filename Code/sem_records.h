@@ -1,15 +1,20 @@
-//Asociar cada semantic record con cada tipo de simbolo gramatical
-//Cada tipo de simbolo tendra el mismo dato en su semantic record
+/*
+	sem_records.h
+	Asociar cada semantic record con cada tipo de simbolo gramatical
+	Cada tipo de simbolo tendra el mismo dato en su semantic record
+
+	COMPILADOR MICRO -> x86
+
+	Created by: 
+		Jason Barrantes Arce.
+		Randy Morales Gamboa
+
+*/
 
 #define MAXWORDS 512
 #define MAXIDLEN 33
 typedef char string[MAXIDLEN];
 
-
-
-
-//PROPONGO QUITAR ESTO Y USAR SOLO EL expr_rec
-//Ese op_rec no hace mucho, se puede cambiar
 typedef struct operator{
 
 	enum op {PLUS, MINUS} operator;

@@ -1,5 +1,15 @@
-// Rutinas semanticas del programa
-// Se encargan de traducir los tokens a x86
+/*
+	sem_routines.c
+	Rutinas semanticas del programa
+	Se encargan de traducir los tokens a x86
+
+	COMPILADOR MICRO -> x86
+
+	Created by: 
+		Jason Barrantes Arce.
+		Randy Morales Gamboa
+
+*/
 
 #include "sem_routines.h"
 

@@ -1,4 +1,13 @@
-// Rutinas semánticas.
+/*
+	sem_routines.h
+
+	COMPILADOR MICRO -> x86
+
+	Created by: 
+		Jason Barrantes Arce.
+		Randy Morales Gamboa
+
+*/
 
 char *messageData = "section .data  	\n \
 											\n \
@@ -157,9 +166,7 @@ expr_rec process_id(void);
 // Convierte un literal a número.
 expr_rec process_literal(void);
 
-// 
 void write_expr(expr_rec out_expr);
-//
 
 expr_rec constant_folding(expr_rec e1, op_rec op, expr_rec e2);
 
