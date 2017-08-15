@@ -46,7 +46,7 @@ void enter(string word){
 void recope(){
 	table.current = table.head;
 	while(table.current != NULL){
-		// printf(" Name - %s - Memory Direction - %d  \n", table.current->values.name, table.current->values.val);
+		printf(" Name - %s - Memory Direction - %d  \n", table.current->values.name, table.current->values.val);
 		table.current = table.current->next;
 	}
 
@@ -180,8 +180,6 @@ expr_rec constant_folding(expr_rec e1, op_rec op, expr_rec e2){
 	e_rec.kind = TEMPEXPR;
 	free(temp);
 	return e_rec;
-
-
 }
 
 expr_rec gen_infix(expr_rec e1, op_rec op, expr_rec e2){
@@ -219,6 +217,25 @@ expr_rec gen_infix(expr_rec e1, op_rec op, expr_rec e2){
 	current_file = file_sText;
 	fprintf(current_file, message, op_op, op_e1, op_e2, op_op, extract_exp(e_rec));
 	return e_rec;
+}
+
+expr_rec if_condition(expr_rec left_operand, expr_rec center_operand, expr_rec right_operand){
+	
+	expr_rec e_rec;
+	char *message;
+	string name_left;
+	string name_center;
+	string name_right;
+
+	strcpy(name_left, extract_exp(left_operand));
+	strcpy(name_center, extract_exp(center_operand));
+	strcpy(name_right, extract_exp(right_operand));
+	strcpy(e_rec.name, get_temp());
+
+	current_file = file_sText;
+	//fprintf(current_file, message, op_op, op_e1, op_e2, op_op, extract_exp(e_rec));
+	return e_rec;
+
 }
 
 void read_id(expr_rec in_var){

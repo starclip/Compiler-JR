@@ -40,7 +40,7 @@ token check_reserved(void){
 }
 
 void lexical_error(int in_char){
-	printf("%s %c %s %s\n", "Lexical Error. No se reconoce el caracter: ", in_char, " esta en: ", token_buffer);
+	printf("Lexical Error. No se reconoce el caracter: %c, en la linea: %d\n", in_char, line_number);
 }
 
 //Lee caracteres y les determina su token
@@ -53,6 +53,9 @@ token scanner(void){
 	while ((in_char = getc(file)) != EOF){	//Obtener caracteres hasta el fin de archivo
 
 		if (isspace(in_char) || validate_Enter== 1){
+
+			if(in_char == '\n'){ line_number++;}
+
 			continue;	// Ignora los espacios
 
 		}else if (isalpha(in_char)){ // es un caracter alfabetico
@@ -111,6 +114,9 @@ token scanner(void){
 				ungetc(c, file);
 				return MINUSOP;
 			}
+		}else if (in_char == '|'){
+			return PIPE;
+
 		}else{
 			lexical_error(in_char);
 		}	

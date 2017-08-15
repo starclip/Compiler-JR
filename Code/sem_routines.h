@@ -163,3 +163,4 @@ void write_expr(expr_rec out_expr);
 
 expr_rec constant_folding(expr_rec e1, op_rec op, expr_rec e2);
 
+expr_rec if_condition(expr_rec left_operand, expr_rec center_operand, expr_rec right_operand);

@@ -10,12 +10,13 @@ char token_buffer[LEN_TOKEN_BUFFER];
 char reserved_words[4][6] = {"begin", "end", "read", "write"};
 int pos_token_buffer;
 int validate_Enter;
+int line_number = 1;
 
 typedef enum token_types{
 
 	BEGIN, END, READ, WRITE, ID, INTLITERAL, 
 	LPAREN, RPAREN, SEMICOLON, COMMA, ASSIGNOP,
-	PLUSOP, MINUSOP, SCANEOF
+	PLUSOP, MINUSOP, SCANEOF, PIPE
 
 } token;
 

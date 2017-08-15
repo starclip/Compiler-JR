@@ -23,47 +23,6 @@
 #include "parser.h"
 #include "sem_routines.c"
 
-
-/*
-
-token next_token(void){
-	
-	if (temp_token_ptr == NULL){
-		temp_token = scanner();
-		temp_token_ptr = &temp_token;;
-		//temp_token_ptr = &temp;
-		//return temp;
-	}
-	//printf(" * %d\n", *temp_token_ptr);
-	return *temp_token_ptr;
-}
-
-
-void match(token tok){
-
-	if (temp_token_ptr == NULL){
-		temp_token = scanner();
-		//printf("Parameters -> %d, Scanner -> %d\n", tok, temp_token);
-		if(temp_token == tok){
-			//printf("%s\n","True");
-			current_token = tok;
-		}else{
-			syntax_error(tok);
-		}
-		return;
-	}
-
-	if (*temp_token_ptr == tok){
-		//printf("Parameters -> %d, Scanner -> %d\n", tok, *temp_token_ptr);
-		current_token = *temp_token_ptr;
-		temp_token_ptr = NULL;
-	}
-}
-
-*/
-
-// Match y next_token no funcionan con write o con otros tipos de errores.
-
 token next_token(void){
 	
 	if (current_token_ptr == temp_token_ptr || temp_token_ptr == NULL){
@@ -87,7 +46,12 @@ void match(token tok){
 		current_token_ptr = &current_token;
 		temp_token_ptr = temp;
 	}else{
-		syntax_error(tempTok);
+
+		if(tok==BEGIN || tok==END || tok==SCANEOF){
+			syntax_error(tok);
+		}else{
+			syntax_error(tempTok);
+		}
 	}
 	
 	
@@ -96,35 +60,28 @@ void match(token tok){
 
 void syntax_error(token tok){	//FALTA HACER
 
-	if (tok == BEGIN){
-		printf("%s\n", "Error de sintaxis. El BEGIN no va en esa parte.");
-	}else if(tok == END){
-		printf("%s\n", "Error de sintaxis. El END no va en esa parte");
-	}else if(tok == READ){
-		printf("%s\n", "Error de sintaxis. El READ no va en esa parte");
-	}else if(tok == WRITE){
-		printf("%s\n", "Error de sintaxis. El WRITE no va en esa parte");
-	}else if(tok == ID){
-		printf("%s\n", "Error de sintaxis. El ID no va en esa parte");
-	}else if(tok == INTLITERAL){
-		printf("%s\n", "Error de sintaxis. El INTLITERAL no va en esa parte");
-	}else if(tok == LPAREN){
-		printf("%s\n", "Error de sintaxis. El LPAREN no va en esa parte");
-	}else if(tok == RPAREN){
-		printf("%s\n", "Error de sintaxis. El RPAREN no va en esa parte");
-	}else if(tok == SEMICOLON){
-		printf("%s\n", "Error de sintaxis. El SEMICOLON no va en esa parte");
-	}else if(tok == COMMA){
-		printf("%s\n", "Error de sintaxis. El COMMA no va en esa parte");
-	}else if(tok == ASSIGNOP){
-		printf("%s\n", "Error de sintaxis. El ASSIGNOP no va en esa parte");
-	}else if(tok == PLUSOP){
-		printf("%s\n", "Error de sintaxis. El PLUSOP no va en esa parte");
-	}else if(tok == MINUSOP){
-		printf("%s\n", "Error de sintaxis. El MINUSOP no va en esa parte");
-	}else if(tok == SCANEOF){
-		printf("%s\n", "Error de sintaxis. El SCANEOF no va en esa parte");
+	switch(tok){
+
+		case BEGIN: printf("%s", "Error de sintaxis: BEGIN"); break;
+		case END: printf("%s", "Error de sintaxis: END"); break;
+		case READ: printf("%s", "Error de sintaxis: READ"); break;
+		case WRITE: printf("%s", "Error de sintaxis: WRITE"); break;
+		case ID: printf("%s", "Error de sintaxis: ID"); break;
+		case INTLITERAL: printf("%s", "Error de sintaxis: INTLITERAL"); break;
+		case LPAREN: printf("%s", "Error de sintaxis: LPAREN"); break;
+		case RPAREN: printf("%s", "Error de sintaxis: RPAREN"); break;
+		case SEMICOLON: printf("%s", "Error de sintaxis: SEMICOLON"); break;
+		case COMMA: printf("%s", "Error de sintaxis: COMMA"); break;
+		case ASSIGNOP: printf("%s", "Error de sintaxis: ASSIGNOP"); break;
+		case PLUSOP: printf("%s", "Error de sintaxis: PLUSOP"); break;
+		case MINUSOP: printf("%s", "Error de sintaxis: MINUSOP"); break;
+		case SCANEOF: printf("%s", "Error de sintaxis: SCANEOF"); break;
+		case PIPE: printf("%s", "Error de sintaxis: PIPE"); break;
+
+		default: break;
 	}
+
+	printf(" en la linea: %d\n", line_number);
 }
 
 void ident(expr_rec *id_rec){
@@ -189,17 +146,40 @@ void primary(expr_rec *result){
 void expression(expr_rec *result){	// <expression> ::= <primary> { <add op> <primary> }
 
 
-	expr_rec left_operand, right_operand;
+	expr_rec left_operand, center_operand, right_operand;
 	op_rec op;
 
 	primary(&left_operand);	//
 	token t = next_token();
+
+	if(t == PIPE){
+
+		match(PIPE);
+		primary(&center_operand);
+
+		if(t = next_token() == PIPE){
+
+			match(PIPE);
+			primary(&right_operand);
+
+		}else{
+			syntax_error(t);
+			return;
+		}
+
+		left_operand = if_condition(left_operand, center_operand, right_operand);
+		*result = left_operand;
+		return;
+	}
+
+
 	while(t == PLUSOP || t == MINUSOP){
 		add_op(&op);	//
 		primary(&right_operand); //
 		left_operand = gen_infix(left_operand, op, right_operand);
 		t = next_token();
 	}
+
 	*result = left_operand;
 }
 
@@ -313,6 +293,6 @@ int main(){
 		return 0;
 	}
 	system_goal();
-	recope();
+	//recope();
 	return 0;
 }

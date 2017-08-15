@@ -1,7 +1,5 @@
-begin
-    a := 4 + 2;
-    b := a + 32;
-    c := 78 + d;
-    d := a + b - c;
-    e := 5;
+begin a := 10;
+b := (c|(8+9)|0);
+z := j+k);
+write(b);
 end

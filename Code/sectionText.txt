@@ -6,30 +6,24 @@ section .text
  
  global    _start   
  											
- start:  	
+ _start:  	
  
+  
 	; declare variable 
  	; ---------------------------  
  	mov eax, 0				 
  	mov [esp + 0], ax   
  
- 	; a := 100000000000000000000000000 16 ceros -> 
+ 		; movLiteral destino, origen L 
+ 	; ---------------------------  
+ 	mov eax, 10         
+ 	mov [esp + 0], ax  
+ 	; ---------------------------  
  		; declare variable 
  	; ---------------------------  
  	mov eax, 0				 
  	mov [esp + 4], ax   
  
- 		; add Literal, result 
- 	mov eax, 6        
- 	mov [esp + 4], ax 
- 
-	; mov destino, origen 
- 	; ---------------------------  
- 	mov ecx, eax  
- 	mov eax, [esp + 4] 
- 	mov [esp + 0], ax 
- 	mov eax, ecx  
- 	; ---------------------------  
  		; declare variable 
  	; ---------------------------  
  	mov eax, 0				 
@@ -40,30 +34,22 @@ section .text
  	mov eax, 0				 
  	mov [esp + 12], ax   
  
- 		; add  op1, Literal, result 
- 	; ---------------------------  
- 	mov ecx, eax 
- 	mov edx, ebx 
- 	mov eax, 32 
- 	mov ebx, [esp + 0] 
- 	add eax, ebx 
+ 		; add Literal, result 
+ 	mov eax, 17        
  	mov [esp + 12], ax 
- 	mov eax, ecx 
- 	mov ebx, edx 
- 	; ---------------------------  
  
- 	; mov destino, origen 
- 	; ---------------------------  
- 	mov ecx, eax  
- 	mov eax, [esp + 12] 
- 	mov [esp + 8], ax 
- 	mov eax, ecx  
- 	; ---------------------------  
- 		; declare variable 
+	; declare variable 
  	; ---------------------------  
  	mov eax, 0				 
  	mov [esp + 16], ax   
  
+ 		; mov destino, origen 
+ 	; ---------------------------  
+ 	mov ecx, eax  
+ 	mov eax, [esp + 16] 
+ 	mov [esp + 4], ax 
+ 	mov eax, ecx  
+ 	; ---------------------------  
  		; declare variable 
  	; ---------------------------  
  	mov eax, 0				 
@@ -74,54 +60,23 @@ section .text
  	mov eax, 0				 
  	mov [esp + 24], ax   
  
- 		; add  op1, Literal, result 
- 	; ---------------------------  
- 	mov ecx, eax 
- 	mov edx, ebx 
- 	mov eax, 78 
- 	mov ebx, [esp + 20] 
- 	add eax, ebx 
- 	mov [esp + 24], ax 
- 	mov eax, ecx 
- 	mov ebx, edx 
- 	; ---------------------------  
- 
- 	; mov destino, origen 
- 	; ---------------------------  
- 	mov ecx, eax  
- 	mov eax, [esp + 24] 
- 	mov [esp + 16], ax 
- 	mov eax, ecx  
- 	; ---------------------------  
  		; declare variable 
  	; ---------------------------  
  	mov eax, 0				 
  	mov [esp + 28], ax   
  
- 		; add  op1, op2, result 
- 	; ---------------------------  
- 	push eax 
- 	push ebx 
- 	mov eax, [esp + 0] 
- 	mov ebx, [esp + 8] 
- 	add eax, ebx 
- 	mov [esp + 28], ax 
- 	pop ebx 
- 	pop eax 
- 	; ---------------------------  
- 
- 	; declare variable 
+ 		; declare variable 
  	; ---------------------------  
  	mov eax, 0				 
  	mov [esp + 32], ax   
  
- 		; sub  op1, op2, result 
+ 		; add  op1, op2, result 
  	; ---------------------------  
  	push eax 
  	push ebx 
- 	mov eax, [esp + 28] 
- 	mov ebx, [esp + 16] 
- 	sub eax, ebx 
+ 	mov eax, [esp + 24] 
+ 	mov ebx, [esp + 28] 
+ 	add eax, ebx 
  	mov [esp + 32], ax 
  	pop ebx 
  	pop eax 
@@ -133,16 +88,6 @@ section .text
  	mov eax, [esp + 32] 
  	mov [esp + 20], ax 
  	mov eax, ecx  
- 	; ---------------------------  
- 		; declare variable 
- 	; ---------------------------  
- 	mov eax, 0				 
- 	mov [esp + 36], ax   
- 
- 		; movLiteral destino, origen L 
- 	; ---------------------------  
- 	mov eax, 5         
- 	mov [esp + 36], ax  
  	; ---------------------------  
  	 
  	mov eax, 1 
